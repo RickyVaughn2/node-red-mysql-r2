@@ -1,0 +1,105 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mysql-r2', {
+    category: 'database',
+    color: '#F3B567',
+    defaults: {
+      name: { value: '' },
+      host: { value: 'localhost', required: false },
+      database: { value: '', required: false },
+      username: { value: '', required: false },
+      password: { value: '', required: false },
+      sql: { value: '', required: false },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'font-awesome/fa-database',
+    label: function() {
+      return this.name || 'mysql-r2';
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="mysql-r2">
+  <div class="form-row">
+    <label for="node-input-name">
+        <i class="fa fa-tag"></i> Name
+    </label>
+    <input type="text" id="node-input-name" placeholder="Name">
+</div>
+
+  <div class="form-row">
+    <label for="node-input-host">
+    <i class="fa fa-server"></i> Host
+    </label>
+    <input type="text" id="node-input-host" placeholder="Host/msg.host" >
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-database">
+      <i class="fa fa-database"></i> Database
+      </label>
+      <input type="text" id="node-input-database" placeholder="Hostname/IP/msg.database" >
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-username">
+      <i class="fa fa-user"></i> Username
+      </label>
+      <input type="text" id="node-input-username" placeholder="Username/msg.username" >
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-password">
+      <i class="fa fa-lock"></i> Password
+      </label>
+      <input type="password" id="node-input-password" placeholder="Password/msg.password" >
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-sql">
+      <i class="fa fa-code"></i> SQL
+      </label>
+      <textarea id="node-input-sql" rows="4" placeholder="SQL/msg.sql" ></textarea>
+  </div>
+</script>
+
+<script type="text/markdown" data-help-name="mysql-r2">
+This Node-RED node allows you to execute MySQL queries against a specified database table.
+
+### Configuration
+
+The `mysql-r2` node can be configured using the following properties.
+
+* Name: A user-friendly name for the node.
+* Database: The name of the MySQL database to connect to.
+* Table: The name of the table within the database to execute the query against.
+* Username: The username to use to authenticate with the MySQL database.
+* Password: The password to use to authenticate with the MySQL database.
+* SQL: The SQL query to execute against the specified table.
+
+
+### Inputs
+
+The `mysql-r2` node accepts a message with the following properties.
+
+: msg.sql (string) : The SQL query to execute against the specified table. If not set, the query defined in the node configuration will be used.
+
+: msg.host (string) : The SQL query to be used. If not set, the SQL query defined in the node configuration will be used.
+
+: msg.database (string) : The name of the MySQL database to connect to. If not set, the database name defined in the node configuration will be used.
+
+: msg.username (string) : The username to use to authenticate with the MySQL database. If not set, the username defined in the node configuration will be used.
+
+: msg.password (string) : The password to use to authenticate with the MySQL database. If not set, the password defined in the node configuration will be used.
+
+
+### Outputs
+
+The `mysql-r2` node outputs a message with the following properties.
+
+1. Standard output
+: msg.payload (string) : The results of the SQL query as an array of objects. Each object in the array represents a row in the query results, with property names corresponding to the column names in the result set.
+
+</script>
+  
+
