@@ -1,5 +1,5 @@
 {
-    "name": "@rickyvaughn2/node-red-mysql-r2",
+    "name": "node-red-mysql-r2",
     "version": "1.0.0",
     "description": "A Node-RED node that allows you to execute MySQL queries against a specified database table.",
     "main": "mysql-r2.js",
