@@ -55,6 +55,14 @@ The node status will reflect the status of the MySQL connection:
 - **idle**: The node has successfully connected to the database, closed the connection and is waiting for the next message to connect.
 - **error**: There was an error connecting to the database or executing the query.
 
+
+## Example Flow
+    [{"id":"27a0a5d0.b8ba64","type":"inject","z":"de780fa5.5b8d5","name":"","props":[{"p":"payload"}],"repeat":"","crontab":"","once":false,"onceDelay":0.1,"topic":"","payload":"SELECT * FROM users","payloadType":"str","x":220,"y":220,"wires":[["c2f7b05a.4f4a4"]]},{"id":"e2a52467.6cb078","type":"mysql-r2","z":"de780fa5.5b8d5","mydb":"","name":"","host":"localhost","username":"","password":"","sql":"","x":570,"y":220,"wires":[["f81a9a4e.133ef8"]]},{"id":"f81a9a4e.133ef8","type":"debug","z":"de780fa5.5b8d5","name":"","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload","targetType":"msg","statusVal":"","statusType":"auto","x":830,"y":220,"wires":[]},{"id":"c2f7b05a.4f4a4","type":"change","z":"de780fa5.5b8d5","name":"","rules":[{"t":"set","p":"database","pt":"msg","to":"my_database","tot":"str"},{"t":"set","p":"username","pt":"msg","to":"my_username","tot":"str"},{"t":"set","p":"password","pt":"msg","to":"my_password","tot":"str"},{"t":"set","p":"host","pt":"msg","to":"localhost","tot":"str"}],"action":"","property":"","from":"","to":"","reg":false,"x":390,"y":220,"wires":[["e2a52467.6cb078"]]}]
+
+This flow consists of an inject node that generates a sample SQL query, a change node that sets the database, username, password, and host information using message properties, a mysql-r2 node that executes the SQL query against the MySQL database using the message properties, and a debug node that outputs the result set to the Node-RED debug pane.
+
+To use this flow, you will need to modify the host, database, username, and password properties of the change node to match your MySQL database configuration.
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
