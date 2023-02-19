@@ -57,4 +57,4 @@ The node status will reflect the status of the MySQL connection:
 
 ## License
 
-This project is licensed under the GNU License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
