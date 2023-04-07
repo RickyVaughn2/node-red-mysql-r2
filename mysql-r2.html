@@ -9,6 +9,9 @@
       username: { value: '', required: false },
       password: { value: '', required: false },
       sql: { value: '', required: false },
+      connectionLimit: { value: '', required: false },
+      waitForConnections: { value: '', required: false },
+      queueTimeout: { value: '', required: false },
     },
     inputs: 1,
     outputs: 1,
@@ -25,7 +28,7 @@
         <i class="fa fa-tag"></i> Name
     </label>
     <input type="text" id="node-input-name" placeholder="Name">
-</div>
+  </div>
 
   <div class="form-row">
     <label for="node-input-host">
@@ -60,6 +63,27 @@
       <i class="fa fa-code"></i> SQL
       </label>
       <textarea id="node-input-sql" rows="4" placeholder="SQL/msg.sql" ></textarea>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-connectionLimit">
+        <i class="fa fa-sort-numeric-up"></i> Connection Limit
+    </label>
+    <input type="number" id="node-input-connectionLimit" placeholder="Connection Limit">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-waitForConnections" style="width:auto;">
+        <i class="fa fa-clock"></i> Wait For Connections
+    </label>
+    <input type="checkbox" id="node-input-waitForConnections" style="display:inline-block; width:auto; vertical-align: middle;">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-queueTimeout">
+        <i class="fa fa-hourglass-half"></i> Queue Timeout (ms)
+    </label>
+    <input type="number" id="node-input-queueTimeout" placeholder="Queue Timeout (ms)">
   </div>
 </script>
 
