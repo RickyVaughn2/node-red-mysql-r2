@@ -4,17 +4,55 @@
     color: '#F3B567',
     defaults: {
       name: { value: '' },
-      host: { value: 'localhost', required: false },
-      database: { value: '', required: false },
-      username: { value: '', required: false },
-      password: { value: '', required: false },
-      sql: { value: '', required: false },
+      host: { value: 'localhost' },
+      database: { value: '' },
+      username: { value: '' },
+      password: { value: '' },
+      sql: { value: '' },
+      pooling: { value: false },
+      waitForConnections: { value: true },
+      connectionLimit: { value: 10 },
+      queueTimeout: { value: 10000 },
     },
     inputs: 1,
     outputs: 1,
     icon: 'font-awesome/fa-database',
-    label: function() {
+    label: function () {
       return this.name || 'mysql-r2';
+    },
+    oneditprepare: function () {
+      $("#node-input-pooling").on("change", function () {
+        const poolingChecked = $(this).prop("checked");
+        $("#node-input-waitForConnections, #node-input-connectionLimit, #node-input-queueTimeout").prop("disabled", !poolingChecked);
+      }).trigger("change");
+
+      const inputs = [
+        "name",
+        "host",
+        "database",
+        "username",
+        "password",
+        "sql",
+        "pooling",
+        "waitForConnections",
+        "connectionLimit",
+        "queueTimeout",
+      ];
+
+      inputs.forEach((input) => {
+        const inputElement = $(`#node-input-${input}`);
+        const inputValue = this[input];
+
+        if (inputElement.is(":checkbox")) {
+          inputElement.prop("checked", inputValue);
+        } else {
+          inputElement.val(inputValue);
+        }
+
+        inputElement.on("change", () => {
+          this[input] = inputElement.is(":checkbox") ? inputElement.prop("checked") : inputElement.val();
+        });
+      });
     },
   });
 </script>
@@ -22,46 +60,69 @@
 <script type="text/html" data-template-name="mysql-r2">
   <div class="form-row">
     <label for="node-input-name">
-        <i class="fa fa-tag"></i> Name
+      <i class="fa fa-tag"></i> Name
     </label>
     <input type="text" id="node-input-name" placeholder="Name">
-</div>
-
+  </div>
   <div class="form-row">
     <label for="node-input-host">
-    <i class="fa fa-server"></i> Host
+      <i class="fa fa-server"></i> Host
     </label>
-    <input type="text" id="node-input-host" placeholder="Host/msg.host" >
+    <input type="text" id="node-input-host" placeholder="Host/msg.host">
   </div>
-
   <div class="form-row">
-      <label for="node-input-database">
+    <label for="node-input-database">
       <i class="fa fa-database"></i> Database
-      </label>
-      <input type="text" id="node-input-database" placeholder="Hostname/IP/msg.database" >
+    </label>
+    <input type="text" id="node-input-database" placeholder="Database/msg.database">
   </div>
-
   <div class="form-row">
-      <label for="node-input-username">
+    <label for="node-input-username">
       <i class="fa fa-user"></i> Username
-      </label>
-      <input type="text" id="node-input-username" placeholder="Username/msg.username" >
+    </label>
+    <input type="text" id="node-input-username" placeholder="Username/msg.username">
   </div>
-
   <div class="form-row">
-      <label for="node-input-password">
+    <label for="node-input-password">
       <i class="fa fa-lock"></i> Password
-      </label>
-      <input type="password" id="node-input-password" placeholder="Password/msg.password" >
+    </label>
+    <input type="password" id="node-input-password" placeholder="Password/msg.password">
   </div>
-
   <div class="form-row">
-      <label for="node-input-sql">
+    <label for="node-input-sql">
       <i class="fa fa-code"></i> SQL
-      </label>
-      <textarea id="node-input-sql" rows="4" placeholder="SQL/msg.sql" ></textarea>
+    </label>
+    <textarea id="node-input-sql" rows="4" placeholder="SQL/msg.sql"></textarea>
+  </div>
+  <hr>
+  <div class="form-row">
+    <label for="node-input-pooling">
+      <i class="fa fa-cogs"></i> Connection Pooling
+    </label>
+    <input type="checkbox" id="node-input-pooling">
+  </div>
+  <div class="form-row">
+    <label for="node-input-waitForConnections">
+      <i class="fa fa-clock-o"></i> Wait for Connections
+    </label>
+    <input type="checkbox" id="node-input-waitForConnections">
+  </div>
+  <div class="form-row">
+    <label for="node-input-connectionLimit">
+      <i class="fa fa-chain"></i> Connection Limit
+    </label>
+    <input type="number" id="node-input-connectionLimit" min="1" step="1">
+  </div>
+  <div class="form-row">
+    <label for="node-input-queueTimeout">
+      <i class="fa fa-hourglass-end"></i> Queue Timeout (ms)
+    </label>
+    <input type="number" id="node-input-queueTimeout" min="1" step="1">
   </div>
 </script>
+
+
+
 
 <script type="text/markdown" data-help-name="mysql-r2">
 This Node-RED node allows you to execute MySQL queries against a specified database table.
@@ -76,6 +137,10 @@ The `mysql-r2` node can be configured using the following properties.
 * Username: The username to use to authenticate with the MySQL database.
 * Password: The password to use to authenticate with the MySQL database.
 * SQL: The SQL query to execute against the specified table.
+* Connection Pooling: Enable or disable connection pooling.
+* Wait for Connections: Determines whether the pool should wait for a connection to be available when there are no more available connections.
+* Connection Limit: The maximum number of connections to create at once.
+* Queue Timeout: The maximum number of milliseconds to wait before timing out when waiting for a connection to become available.
 
 
 ### Inputs

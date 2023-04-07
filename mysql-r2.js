@@ -1,4 +1,4 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     "use strict";
     const mysql = require('mysql');
 
@@ -6,46 +6,73 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         var node = this;
 
-        node.status({fill:"grey",shape:"dot",text:"disconnected"});
+        var pool;
 
-        node.on('input', function(msg) {
+        function updateStatus() {
+            if (config.pooling && pool) {
+                node.status({ fill: "grey", shape: "dot", text: "pooling" });
+            } else {
+                node.status({ fill: "grey", shape: "dot", text: "disconnected" });
+            }
+        }
+
+        updateStatus();
+
+        node.on('input', function (msg) {
             var host = msg.host || config.host;
             var database = msg.database || config.database;
             var username = msg.username || config.username;
             var password = msg.password || config.password;
             var sql = msg.sql || config.sql;
 
-            var connection = mysql.createConnection({
-                host: host,
-                user: username,
-                password: password,
-                database: database
-            });
+            if (config.pooling && msg.hasOwnProperty('host')) {
+                pool = mysql.createPool({
+                    host: host,
+                    user: username,
+                    password: password,
+                    database: database,
+                    waitForConnections: config.waitForConnections,
+                    connectionLimit: config.connectionLimit,
+                    queueTimeout: config.queueTimeout
+                });
+            }
 
-            node.status({fill:"yellow",shape:"ring",text:"connecting"});
+            var getConnection = config.pooling ? pool.getConnection.bind(pool) : (callback) => {
+                var connection = mysql.createConnection({
+                    host: host,
+                    user: username,
+                    password: password,
+                    database: database
+                });
+                callback(null, connection);
+            };
 
-            connection.connect(function(err) {
+            node.status({ fill: "yellow", shape: "ring", text: "connecting" });
+
+            getConnection(function (err, connection) {
                 if (err) {
                     node.error(err, msg);
-                    node.status({fill:"red",shape:"dot",text:"error"});
-                    connection.end();
+                    node.status({ fill: "red", shape: "dot", text: "error" });
+                    if (!config.pooling) connection.end();
                     return;
                 }
 
-                node.status({fill:"green",shape:"dot",text:"connected"});
+                node.status({ fill: "green", shape: "dot", text: "connected" });
 
-                connection.query(sql, function(err, rows) {
+                connection.query(sql, function (err, rows) {
                     if (err) {
                         node.error(err, msg);
-                        node.status({fill:"red",shape:"dot",text:"error"});
-                        connection.end();
-                        return;
+                        node.status({ fill: "red", shape: "dot", text: "error" });
+                    } else {
+                        msg.payload = rows;
+                        node.send(msg);
+                        updateStatus();
                     }
-
-                    msg.payload = rows;
-                    node.send(msg);
-                    node.status({fill:"green",shape:"ring",text:"idle"});
-                    connection.end();
+                    if (config.pooling) {
+                        connection.release();
+                    } else {
+                        connection.end();
+                    }
                 });
             });
         });
