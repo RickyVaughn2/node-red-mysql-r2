@@ -6,16 +6,6 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         var node = this;
 
-        var pool = mysql.createPool({
-            connectionLimit: parseInt(config.connectionLimit) || 10,
-            host: config.host,
-            user: config.username,
-            password: config.password,
-            database: config.database,
-            waitForConnections: config.waitForConnections === 'true' ? true : false,
-            queueTimeout: parseInt(config.queueTimeout) || 30000 // Timeout after 30 seconds
-        });
-
         node.status({fill:"grey",shape:"dot",text:"disconnected"});
 
         node.on('input', function(msg) {
@@ -25,37 +15,38 @@ module.exports = function(RED) {
             var password = msg.password || config.password;
             var sql = msg.sql || config.sql;
 
+            var connection = mysql.createConnection({
+                host: host,
+                user: username,
+                password: password,
+                database: database
+            });
+
             node.status({fill:"yellow",shape:"ring",text:"connecting"});
 
-            pool.getConnection(function(err, connection) {
+            connection.connect(function(err) {
                 if (err) {
                     node.error(err, msg);
                     node.status({fill:"red",shape:"dot",text:"error"});
+                    connection.end();
                     return;
                 }
 
                 node.status({fill:"green",shape:"dot",text:"connected"});
 
                 connection.query(sql, function(err, rows) {
-                    connection.release(); // Release the connection back to the pool
                     if (err) {
                         node.error(err, msg);
                         node.status({fill:"red",shape:"dot",text:"error"});
+                        connection.end();
                         return;
                     }
 
                     msg.payload = rows;
                     node.send(msg);
                     node.status({fill:"green",shape:"ring",text:"idle"});
+                    connection.end();
                 });
-            });
-        });
-
-        node.on('close', function() {
-            pool.end(function(err) {
-                if (err) {
-                    node.error(err);
-                }
             });
         });
     }
