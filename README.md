@@ -1,6 +1,6 @@
 # mysql-r2
 
-The `mysql-r2` Node-RED node allows you to execute SQL queries against a MySQL database. It accepts the host, database name, username, password, and SQL query as inputs, and outputs the query result set.  The node will disconnect from the database between messages.
+The `mysql-r2` Node-RED node allows you to execute SQL queries against a MySQL database. It accepts the host, database name, username, password, and SQL query as inputs, and outputs the query result set. The node can also be configured to use connection pooling to manage multiple connections to the database.
 
 ## Prerequisites
 
@@ -12,7 +12,6 @@ The `mysql-r2` Node-RED node allows you to execute SQL queries against a MySQL d
 You can install the `mysql-r2` node from within Node-RED, or via the npm package manager:
 
 npm install node-red-contrib-mysql-r2
-
 
 ## Usage
 
@@ -30,6 +29,11 @@ npm install node-red-contrib-mysql-r2
 - **Username** (optional): The username to use when connecting to the database.
 - **Password** (optional): The password to use when connecting to the database.
 - **SQL** (optional): The SQL query to execute.
+- **Connection Pooling** (optional): Enable or disable connection pooling.
+- **Wait for Connections** (optional): Determines whether the pool should wait for a connection to be available when there are no more available connections.
+- **Connection Limit** (optional): The maximum number of connections to create at once.
+- **Queue Timeout** (optional): The maximum number of milliseconds to wait before timing out when waiting for a connection to become available.
+
 
 You can also use messages to pass in the configuration values. The node will use the message values if they are present, otherwise it will use the values set in the configuration panel.
 
@@ -54,6 +58,7 @@ The node status will reflect the status of the MySQL connection:
 - **connected**: The node has successfully connected to the database.
 - **idle**: The node has successfully connected to the database, closed the connection and is waiting for the next message to connect.
 - **error**: There was an error connecting to the database or executing the query.
+
 
 
 ## Example Flow
