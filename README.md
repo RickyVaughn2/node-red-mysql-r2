@@ -1,6 +1,6 @@
 # mysql-r2
 
-The `mysql-r2` Node-RED node allows you to execute SQL queries against a MySQL database. It accepts the host, database name, username, password, and SQL query as inputs, and outputs the query result set. The node can also be configured to use connection pooling to manage multiple connections to the database.
+The `mysql-r2` Node-RED node allows you to execute SQL queries against a MySQL database. It accepts the host, port, database name, username, password, and SQL query as inputs, and outputs the query result set. The node can also be configured to use connection pooling to manage multiple connections to the database.
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ npm install node-red-contrib-mysql-r2
 
 1. Drag the `mysql-r2` node from the Node-RED palette to your flow.
 2. Double-click on the node to open its configuration panel.
-3. Enter the database name, username, password, and SQL query in the configuration panel.
+3. Enter the host, port, database name, username, password, and SQL query in the configuration panel.
 4. Click "Done" to save the node configuration.
 5. Deploy your flow.
 
@@ -25,6 +25,7 @@ npm install node-red-contrib-mysql-r2
 
 - **Name** (optional): A name for the node.
 - **Host** (optional): The host name or IP address of the MySQL database.
+- **Port** (optional): The port number of the MySQL server to connect to. If not set, the default MySQL port (3306) will be used.
 - **Database** (optional): The name of the database to execute the query against.
 - **Username** (optional): The username to use when connecting to the database.
 - **Password** (optional): The password to use when connecting to the database.
@@ -33,7 +34,6 @@ npm install node-red-contrib-mysql-r2
 - **Wait for Connections** (optional): Determines whether the pool should wait for a connection to be available when there are no more available connections.
 - **Connection Limit** (optional): The maximum number of connections to create at once.
 - **Queue Timeout** (optional): The maximum number of milliseconds to wait before timing out when waiting for a connection to become available.
-
 
 You can also use messages to pass in the configuration values. The node will use the message values if they are present, otherwise it will use the values set in the configuration panel.
 
@@ -44,6 +44,7 @@ You can also use messages to pass in the configuration values. The node will use
 - **msg.username**: The username to use when connecting to the database (optional, overrides the value set in the node configuration).
 - **msg.password**: The password to use when connecting to the database (optional, overrides the value set in the node configuration).
 - **msg.host**: The host name or IP address of the MySQL database (optional, overrides the value set in the node configuration).
+- **msg.port**: The port number of the MySQL server to connect to (optional, overrides the value set in the node configuration).
 
 ## Output
 
@@ -59,14 +60,13 @@ The node status will reflect the status of the MySQL connection:
 - **idle**: The node has successfully connected to the database, closed the connection and is waiting for the next message to connect.
 - **error**: There was an error connecting to the database or executing the query.
 
-
-
 ## Example Flow
-    [{"id":"27a0a5d0.b8ba64","type":"inject","z":"de780fa5.5b8d5","name":"","props":[{"p":"payload"}],"repeat":"","crontab":"","once":false,"onceDelay":0.1,"topic":"","payload":"SELECT * FROM users","payloadType":"str","x":220,"y":220,"wires":[["c2f7b05a.4f4a4"]]},{"id":"e2a52467.6cb078","type":"mysql-r2","z":"de780fa5.5b8d5","mydb":"","name":"","host":"localhost","username":"","password":"","sql":"","x":570,"y":220,"wires":[["f81a9a4e.133ef8"]]},{"id":"f81a9a4e.133ef8","type":"debug","z":"de780fa5.5b8d5","name":"","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload","targetType":"msg","statusVal":"","statusType":"auto","x":830,"y":220,"wires":[]},{"id":"c2f7b05a.4f4a4","type":"change","z":"de780fa5.5b8d5","name":"","rules":[{"t":"set","p":"database","pt":"msg","to":"my_database","tot":"str"},{"t":"set","p":"username","pt":"msg","to":"my_username","tot":"str"},{"t":"set","p":"password","pt":"msg","to":"my_password","tot":"str"},{"t":"set","p":"host","pt":"msg","to":"localhost","tot":"str"}],"action":"","property":"","from":"","to":"","reg":false,"x":390,"y":220,"wires":[["e2a52467.6cb078"]]}]
 
-This flow consists of an inject node that generates a sample SQL query, a change node that sets the database, username, password, and host information using message properties, a mysql-r2 node that executes the SQL query against the MySQL database using the message properties, and a debug node that outputs the result set to the Node-RED debug pane.
+    [{"id":"27a0a5d0.b8ba64","type":"inject","z":"de780fa5.5b8d5","name":"","props":[{"p":"payload"}],"repeat":"","crontab":"","once":false,"onceDelay":0.1,"topic":"","payload":"SELECT * FROM users","payloadType":"str","x":220,"y":220,"wires":[["c2f7b05a.4f4a4"]]},{"id":"e2a52467.6cb078","type":"mysql-r2","z":"de780fa5.5b8d5","mydb":"","name":"","host":"localhost","port":"","username":"","password":"","sql":"","x":570,"y":220,"wires":[["f81a9a4e.133ef8"]]},{"id":"f81a9a4e.133ef8","type":"debug","z":"de780fa5.5b8d5","name":"","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload","targetType":"msg","statusVal":"","statusType":"auto","x":830,"y":220,"wires":[]},{"id":"c2f7b05a.4f4a4","type":"change","z":"de780fa5.5b8d5","name":"","rules":[{"t":"set","p":"database","pt":"msg","to":"my_database","tot":"str"},{"t":"set","p":"username","pt":"msg","to":"my_username","tot":"str"},{"t":"set","p":"password","pt":"msg","to":"my_password","tot":"str"},{"t":"set","p":"host","pt":"msg","to":"localhost","tot":"str"},{"t":"set","p":"port","pt":"msg","to":"3306","tot":"num"}],"action":"","property":"","from":"","to":"","reg":false,"x":390,"y":220,"wires":[["e2a52467.6cb078"]]}]
 
-To use this flow, you will need to modify the host, database, username, and password properties of the change node to match your MySQL database configuration.
+This flow consists of an inject node that generates a sample SQL query, a change node that sets the database, username, password, host, and port information using message properties, a mysql-r2 node that executes the SQL query against the MySQL database using the message properties, and a debug node that outputs the result set to the Node-RED debug pane.
+
+To use this flow, you will need to modify the host, port, database, username, and password properties of the change node to match your MySQL database configuration.
 
 ## License
 

@@ -24,6 +24,7 @@ module.exports = function (RED) {
             var username = msg.username || config.username;
             var password = msg.password || config.password;
             var sql = msg.sql || config.sql;
+            var port = msg.port || config.port || 3306; // Add the port here, with a default value of 3306
 
             if (config.pooling && msg.hasOwnProperty('host')) {
                 pool = mysql.createPool({
@@ -31,6 +32,7 @@ module.exports = function (RED) {
                     user: username,
                     password: password,
                     database: database,
+                    port: port, // Include the port in the pool configuration
                     waitForConnections: config.waitForConnections,
                     connectionLimit: config.connectionLimit,
                     queueTimeout: config.queueTimeout
@@ -42,7 +44,8 @@ module.exports = function (RED) {
                     host: host,
                     user: username,
                     password: password,
-                    database: database
+                    database: database,
+                    port: port // Include the port in the connection configuration
                 });
                 callback(null, connection);
             };
@@ -80,3 +83,4 @@ module.exports = function (RED) {
 
     RED.nodes.registerType("mysql-r2", MySQLR2Node);
 }
+

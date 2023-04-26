@@ -9,6 +9,7 @@
       username: { value: '' },
       password: { value: '' },
       sql: { value: '' },
+      port: { value: 3306 }, // Add a default value for the port
       pooling: { value: false },
       waitForConnections: { value: true },
       connectionLimit: { value: 10 },
@@ -33,6 +34,7 @@
         "username",
         "password",
         "sql",
+        "port", // Add "port" to the inputs array
         "pooling",
         "waitForConnections",
         "connectionLimit",
@@ -69,6 +71,12 @@
       <i class="fa fa-server"></i> Host
     </label>
     <input type="text" id="node-input-host" placeholder="Host/msg.host">
+  </div>
+  <div class="form-row">
+    <label for="node-input-port">
+      <i class="fa fa-plug"></i> Port
+    </label>
+    <input type="number" id="node-input-port" placeholder="Port/msg.port" min="1" step="1">
   </div>
   <div class="form-row">
     <label for="node-input-database">
@@ -122,44 +130,45 @@
 </script>
 
 <script type="text/markdown" data-help-name="mysql-r2">
-This Node-RED node allows you to execute MySQL queries against a specified database table.
-
-### Configuration
-
-The `mysql-r2` node can be configured using the following properties.
-
-* Name: A user-friendly name for the node.
-* Database: The name of the MySQL database to connect to.
-* Table: The name of the table within the database to execute the query against.
-* Username: The username to use to authenticate with the MySQL database.
-* Password: The password to use to authenticate with the MySQL database.
-* SQL: The SQL query to execute against the specified table.
-* Connection Pooling: Enable or disable connection pooling.
-* Wait for Connections: Determines whether the pool should wait for a connection to be available when there are no more available connections.
-* Connection Limit: The maximum number of connections to create at once.
-* Queue Timeout: The maximum number of milliseconds to wait before timing out when waiting for a connection to become available.
-
-
-### Inputs
-
-The `mysql-r2` node accepts a message with the following properties.
-
-: msg.sql (string) : The SQL query to execute against the specified table. If not set, the query defined in the node configuration will be used.
-
-: msg.host (string) : The SQL query to be used. If not set, the SQL query defined in the node configuration will be used.
-
-: msg.database (string) : The name of the MySQL database to connect to. If not set, the database name defined in the node configuration will be used.
-
-: msg.username (string) : The username to use to authenticate with the MySQL database. If not set, the username defined in the node configuration will be used.
-
-: msg.password (string) : The password to use to authenticate with the MySQL database. If not set, the password defined in the node configuration will be used.
-
-
-### Outputs
-
-The `mysql-r2` node outputs a message with the following properties.
-
-1. Standard output
-: msg.payload (string) : The results of the SQL query as an array of objects. Each object in the array represents a row in the query results, with property names corresponding to the column names in the result set.
-
-</script>
+  This Node-RED node allows you to execute MySQL queries against a specified database table.
+  
+  ### Configuration
+  
+  The `mysql-r2` node can be configured using the following properties.
+  
+  * Name: A user-friendly name for the node.
+  * Host: The host of the MySQL server to connect to.
+  * Port: The port number of the MySQL server to connect to. If not set, the default MySQL port (3306) will be used.
+  * Database: The name of the MySQL database to connect to.
+  * Username: The username to use to authenticate with the MySQL database.
+  * Password: The password to use to authenticate with the MySQL database.
+  * SQL: The SQL query to execute against the specified table.
+  * Connection Pooling: Enable or disable connection pooling.
+  * Wait for Connections: Determines whether the pool should wait for a connection to be available when there are no more available connections.
+  * Connection Limit: The maximum number of connections to create at once.
+  * Queue Timeout: The maximum number of milliseconds to wait before timing out when waiting for a connection to become available.
+  
+  ### Inputs
+  
+  The `mysql-r2` node accepts a message with the following properties.
+  
+  : msg.sql (string) : The SQL query to execute against the specified table. If not set, the query defined in the node configuration will be used.
+  
+  : msg.host (string) : The host of the MySQL server to connect to. If not set, the host defined in the node configuration will be used.
+  
+  : msg.port (number) : The port number of the MySQL server to connect to. If not set, the port defined in the node configuration will be used.
+  
+  : msg.database (string) : The name of the MySQL database to connect to. If not set, the database name defined in the node configuration will be used.
+  
+  : msg.username (string) : The username to use to authenticate with the MySQL database. If not set, the username defined in the node configuration will be used.
+  
+  : msg.password (string) : The password to use to authenticate with the MySQL database. If not set, the password defined in the node configuration will be used.
+  
+  ### Outputs
+  
+  The `mysql-r2` node outputs a message with the following properties.
+  
+  1. Standard output
+  : msg.payload (string) : The results of the SQL query as an array of objects. Each object in the array represents a row in the query results, with property names corresponding to the column names in the result set.
+  
+  </script>
