@@ -15,10 +15,14 @@
     "author": "Ricky Vaughn 2 (r2)",
     "license": "GNU General Public License v3.0",
     "node-red": {
+        "version": ">=2.0.0",
         "nodes": {
         "mysql-r2": "mysql-r2.js"
         }
     },
+    "engines": {
+        "node": ">=12.0.0"
+      },
     "repository": {
         "type": "git",
         "url": "https://github.com/RickyVaughn2/node-red-mysql-r2"
